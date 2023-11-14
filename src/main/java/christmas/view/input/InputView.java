@@ -13,4 +13,9 @@ public class InputView {
         Printer.printFormattedMessage(PrintFormat.ASK_FOR_DATE, EventConstants.DECEMBER.getValue());
         return Console.readLine();
     }
+
+    public static String readOrder() {
+        Printer.printMessage(PrintFormat.ASK_FOR_ORDER);
+        return Console.readLine();
+    }
 }
