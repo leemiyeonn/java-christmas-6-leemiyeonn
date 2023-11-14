@@ -10,11 +10,15 @@ public class Printer {
         System.out.println(format.getFormat());
     }
 
-    public static void printFormattedMessage(PrintFormat format, Object object) {
-        System.out.println(format.format(object));
+    public static void printFormattedMessage(PrintFormat format, Object... args) {
+        System.out.println(format.format(args));
     }
 
     public static void printException(IllegalArgumentException e) {
-        System.out.println("[ERROR] : " + e.getMessage());
+        System.out.println("[ERROR] " + e.getMessage());
+    }
+
+    public static void printSeparator() {
+        System.out.println();
     }
 }
