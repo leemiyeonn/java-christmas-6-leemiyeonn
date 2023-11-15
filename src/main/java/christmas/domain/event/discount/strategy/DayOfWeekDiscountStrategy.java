@@ -19,13 +19,10 @@ public class DayOfWeekDiscountStrategy implements Discount {
 
     @Override
     public int calculateDiscount(Order order) {
-
         int dayOfWeekIndex = convertDayOfMonthToDayOfWeek(order.getVisitDay());
-
         if (!applicableDayOfWeekIndices.contains(dayOfWeekIndex)) {
             return 0;
         }
-
         return order.getItems().entrySet().stream()
                 .filter(entry -> entry.getKey().getCategory() == this.menuCategory)
                 .mapToInt(entry -> entry.getValue() * this.discountAmount)

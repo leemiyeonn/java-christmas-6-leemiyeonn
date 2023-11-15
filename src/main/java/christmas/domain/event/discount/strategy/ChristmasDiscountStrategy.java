@@ -1,7 +1,6 @@
 package christmas.domain.event.discount.strategy;
 
 import christmas.domain.event.discount.Discount;
-import christmas.domain.menu.MenuCategory;
 import christmas.domain.order.Order;
 
 public class ChristmasDiscountStrategy implements Discount {

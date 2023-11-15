@@ -2,7 +2,6 @@ package christmas.domain.event.reward.strategy;
 
 import christmas.domain.constants.event.reward.Badge;
 import christmas.domain.event.reward.Reward;
-import christmas.domain.order.Order;
 
 public class BadgeRewardStrategy implements Reward {
     private final int thresholdForStar;
@@ -16,9 +15,7 @@ public class BadgeRewardStrategy implements Reward {
     }
 
     @Override
-    public Object evaluateReward(Order order) {
-
-        int benefitAmount = order.calculateTotalBenefitAmount();
+    public Object evaluateReward(int benefitAmount) {
 
         if (benefitAmount >= thresholdForSanta) {
             return Badge.SANTA;
