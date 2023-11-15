@@ -2,7 +2,6 @@ package christmas.domain.event.reward.strategy;
 
 import christmas.domain.constants.event.reward.Gift;
 import christmas.domain.event.reward.Reward;
-import christmas.domain.order.Order;
 
 public class GiftRewardStrategy implements Reward {
     private final int thresholdForChampagne;
@@ -12,8 +11,7 @@ public class GiftRewardStrategy implements Reward {
     }
 
     @Override
-    public Object evaluateReward(Order order) {
-        int orderTotal = order.getOrderTotal();
+    public Object evaluateReward(int orderTotal) {
         if (orderTotal >= thresholdForChampagne) {
             return Gift.CHAMPAGNE;
         }
