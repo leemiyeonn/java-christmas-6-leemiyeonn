@@ -2,6 +2,7 @@ package christmas.utils.validator;
 
 import christmas.domain.constants.event.EventConstants;
 import christmas.exception.ExceptionMessage;
+import christmas.utils.Parser;
 
 public class DateValidator extends AbstractValidator<String> {
 
@@ -19,7 +20,7 @@ public class DateValidator extends AbstractValidator<String> {
     }
 
     private int parseDate(String input) {
-        return ValidationUtils.parseInteger(input, ExceptionMessage.INVALID_DATE.getMessage());
+        return Parser.parseInteger(input, ExceptionMessage.INVALID_DATE.getMessage());
     }
 
     private void checkDateRange(int date) {

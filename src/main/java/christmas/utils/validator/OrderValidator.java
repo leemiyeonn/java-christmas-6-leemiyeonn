@@ -4,6 +4,7 @@ import christmas.domain.constants.order.OrderConstants;
 import christmas.domain.menu.MenuCategory;
 import christmas.domain.menu.MenuItem;
 import christmas.exception.ExceptionMessage;
+import christmas.utils.Parser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -73,7 +74,7 @@ public class OrderValidator extends AbstractValidator<String> {
     }
 
     private int parseQuantity(String quantityStr) {
-        return ValidationUtils.parseInteger(quantityStr, ExceptionMessage.INVALID_QUANTITY.getMessage());
+        return Parser.parseInteger(quantityStr, ExceptionMessage.INVALID_QUANTITY.getMessage());
     }
 
     private MenuItem validateMenuItemExists(String menuItemName) {

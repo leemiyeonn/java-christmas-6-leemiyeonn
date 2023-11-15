@@ -6,7 +6,7 @@ import christmas.domain.order.Order;
 import christmas.exception.ExceptionHandler;
 import christmas.exception.RetryExceptionHandler;
 import christmas.service.EventService;
-import christmas.service.OrderService;
+import christmas.utils.Parser;
 import christmas.utils.validator.DateValidator;
 import christmas.utils.validator.OrderValidator;
 import christmas.view.input.InputView;
@@ -15,11 +15,9 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 public class Controller {
-    private final OrderService orderService;
     private final EventService eventService;
 
-    public Controller(OrderService orderService, EventService eventService) {
-        this.orderService = orderService;
+    public Controller(EventService eventService) {
         this.eventService = eventService;
     }
 
@@ -28,7 +26,6 @@ public class Controller {
 
         int visitDay = createEventDate();
         Order originalOrder = createOrder(visitDay);
-
         FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(originalOrder);
 
         OutputView.printResults(originalOrder, finalizedOrder);
@@ -45,7 +42,7 @@ public class Controller {
         return Integer.parseInt(validDate);
     }
 
-    public Order createOrder(int visitDay) {
+    private Order createOrder(int visitDay) {
         ExceptionHandler<String> retryHandler = new RetryExceptionHandler<>(new OrderValidator());
         Supplier<String> orderInputSupplier = InputView::readOrder;
         String validOrder = retryHandler.getResult(orderInputSupplier);
@@ -53,7 +50,7 @@ public class Controller {
     }
 
     private Order processValidOrder(int visitDay, String validOrder) {
-        Map<MenuItem, Integer> orderDetails = orderService.parseOrderDetails(validOrder);
+        Map<MenuItem, Integer> orderDetails = Parser.parseOrderDetails(validOrder);
         return new Order(visitDay, orderDetails);
     }
 }

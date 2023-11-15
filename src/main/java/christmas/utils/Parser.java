@@ -1,4 +1,4 @@
-package christmas.service;
+package christmas.utils;
 
 import christmas.domain.menu.MenuItem;
 import java.util.EnumMap;
@@ -6,8 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-public class OrderService {
-    public Map<MenuItem, Integer> parseOrderDetails(String orderInput) {
+public class Parser {
+    private Parser() {
+    }
+
+    public static int parseInteger(String input, String errorMessage) {
+        try {
+            return Integer.parseInt(input.trim());
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException(errorMessage);
+        }
+    }
+
+    public static Map<MenuItem, Integer> parseOrderDetails(String orderInput) {
         List<String> orderedItems = Stream.of(orderInput.split(","))
                 .map(String::trim)
                 .toList();
