@@ -86,12 +86,12 @@ class EventTest {
     }
 
     @Nested
-    class when_order_is_eligible_for_weekend_christmas {
+    class when_order_is_eligible_for_weekend_and_christmas_and_badge {
         @BeforeEach
         void setUp() {
             int visitDay = 1;
             Map<MenuItem, Integer> items = Map.of(
-                    MenuItem.BBQ_RIB, 1
+                    MenuItem.BBQ_RIB, 2
             );
             testOrder = new Order(visitDay, items);
         }
@@ -102,7 +102,7 @@ class EventTest {
             expectedDiscounts.applyDiscount(EventType.CHRISTMAS_DISCOUNT, 1000);
             expectedDiscounts.applyDiscount(EventType.SPECIAL_DISCOUNT, 0);
             expectedDiscounts.applyDiscount(EventType.WEEKDAY_DISCOUNT, 0);
-            expectedDiscounts.applyDiscount(EventType.WEEKEND_DISCOUNT, 2_023);
+            expectedDiscounts.applyDiscount(EventType.WEEKEND_DISCOUNT, 4_046);
 
             FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
 
@@ -113,15 +113,22 @@ class EventTest {
 
         @Test
         void shouldApplyRewardsCorrectly() {
+            OrderRewards expectedRewards = new OrderRewards();
+            expectedRewards.addBadge(Badge.STAR);
+
             FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
 
+            assertThat(finalizedOrder.getAppliedRewards())
+                    .usingRecursiveComparison()
+                    .isEqualTo(expectedRewards);
+
             assertThat(finalizedOrder.getAppliedRewards().getGifts()).isEmpty();
-            assertThat(finalizedOrder.getAppliedRewards().getBadges()).isEmpty();
+
         }
 
         @Test
         void shouldCalculateTotalBenefitsAmountCorrectly() {
-            int expectedBenefits = 3_023;
+            int expectedBenefits = 5_046;
             FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
 
             assertThat(finalizedOrder.calculateTotalBenefitsAmount()).isEqualTo(expectedBenefits);
@@ -129,7 +136,7 @@ class EventTest {
 
         @Test
         void shouldCalculateExpectedPaymentAfterDiscountCorrectly() {
-            int expectedPayment = 50_977;
+            int expectedPayment = 102_954;
             FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
 
             assertThat(finalizedOrder.getExpectedPaymentAfterDiscount()).isEqualTo(expectedPayment);
@@ -140,7 +147,7 @@ class EventTest {
     class when_order_is_ineligible_for_event_minimum_order_amount_not_met {
         @BeforeEach
         void setUp() {
-            int visitDay = 25;
+            int visitDay = 11;
             Map<MenuItem, Integer> items = Map.of(
                     MenuItem.CAESAR_SALAD, 1
             );
@@ -181,7 +188,7 @@ class EventTest {
     class when_order_is_eligible_for_event_but_no_matching_event {
         @BeforeEach
         void setUp() {
-            int visitDay = 26;
+            int visitDay = 28;
             Map<MenuItem, Integer> items = Map.of(
                     MenuItem.CAESAR_SALAD,1,
                     MenuItem.BBQ_RIB,1
@@ -222,6 +229,46 @@ class EventTest {
             FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
 
             assertThat(finalizedOrder.getExpectedPaymentAfterDiscount()).isEqualTo(testOrder.calculateOrderTotal());
+        }
+    }
+
+    @Nested
+    class BoundaryTests {
+        private final int CHRISTMAS_EVENT_THRESHOLD = 25;
+
+        @Test
+        void shouldApplyChristmasDiscountRightBeforeThreshold() {
+            int visitDay = CHRISTMAS_EVENT_THRESHOLD - 1;
+            Map<MenuItem, Integer> items = Map.of(
+                    MenuItem.CAESAR_SALAD, 4,
+                    MenuItem.CHOCOLATE_CAKE, 1
+            );
+            testOrder = new Order(visitDay, items);
+
+            FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
+            Integer christmasDiscount = finalizedOrder.getAppliedDiscounts().getDiscountDetails()
+                    .get(EventType.CHRISTMAS_DISCOUNT);
+
+            assertThat(finalizedOrder.getAppliedDiscounts().getDiscountDetails())
+                    .containsKey(EventType.CHRISTMAS_DISCOUNT);
+            assertThat(christmasDiscount).isNotZero();
+        }
+
+        @Test
+        void shouldNotApplyChristmasDiscountRightAfterThreshold() {
+            int visitDay = CHRISTMAS_EVENT_THRESHOLD + 1;
+            Map<MenuItem, Integer> items = Map.of(
+                    MenuItem.CAESAR_SALAD, 4,
+                    MenuItem.CHOCOLATE_CAKE, 1
+
+            );
+            testOrder = new Order(visitDay, items);
+
+            FinalizedOrder finalizedOrder = eventService.applyEventDiscountsAndRewards(testOrder);
+            Integer christmasDiscount = finalizedOrder.getAppliedDiscounts().getDiscountDetails()
+                    .get(EventType.CHRISTMAS_DISCOUNT);
+
+            assertThat(christmasDiscount).isZero();
         }
     }
 }
