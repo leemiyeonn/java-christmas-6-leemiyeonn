@@ -22,6 +22,10 @@ public class Event {
         return eventType;
     }
 
+    public boolean isDiscountType(EventType eventType) {
+        return eventType == EventType.CHRISTMAS_DISCOUNT || eventType == EventType.WEEKDAY_DISCOUNT || eventType == EventType.WEEKEND_DISCOUNT || eventType == EventType.SPECIAL_DISCOUNT;
+    }
+
     public boolean isApplicable(int dayOfMonth) {
         return period.isWithinPeriod(dayOfMonth);
     }
@@ -34,10 +38,10 @@ public class Event {
         return 0;
     }
 
-    public Object evaluateReward(Order order) {
+    public Object evaluateReward(Order order, int amount) {
         int dayOfMonth = order.getVisitDay();
         if (rewardStrategy != null && isApplicable(dayOfMonth)) {
-            return rewardStrategy.evaluateReward(order);
+            return rewardStrategy.evaluateReward(amount);
         }
         return null;
     }
