@@ -38,7 +38,7 @@ public class Controller {
         return processValidDate(validDate);
     }
 
-    private int processValidDate(String validDate) {
+    public int processValidDate(String validDate) {
         return Integer.parseInt(validDate);
     }
 
@@ -49,7 +49,7 @@ public class Controller {
         return processValidOrder(visitDay, validOrder);
     }
 
-    private Order processValidOrder(int visitDay, String validOrder) {
+    public Order processValidOrder(int visitDay, String validOrder) {
         Map<MenuItem, Integer> orderDetails = Parser.parseOrderDetails(validOrder);
         return new Order(visitDay, orderDetails);
     }
