@@ -11,6 +11,7 @@ import christmas.exception.RetryExceptionHandler;
 import christmas.utils.validator.AbstractValidator;
 import java.util.function.Supplier;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class RetryExceptionHandlerTest {
@@ -25,6 +26,7 @@ class RetryExceptionHandlerTest {
         retryExceptionHandler = new RetryExceptionHandler<>(validator);
     }
 
+    @DisplayName("예외 처리: 사용자 인터페이스: 유효하지 않은 입력시 재입력 로직 테스트")
     @Test
     void getResult_ShouldRetryUntilValidInput() {
         when(supplier.get()).thenReturn("invalid input1").thenReturn("invalid input2").thenReturn("valid input");
