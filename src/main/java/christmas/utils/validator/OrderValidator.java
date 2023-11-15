@@ -3,6 +3,7 @@ package christmas.utils.validator;
 import christmas.domain.constants.order.OrderConstants;
 import christmas.domain.menu.MenuCategory;
 import christmas.domain.menu.MenuItem;
+import christmas.exception.ExceptionMessage;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -11,7 +12,6 @@ import java.util.Set;
 import java.util.regex.Pattern;
 
 public class OrderValidator extends AbstractValidator<String> {
-    private static final String ERROR_INVALID_INPUT = "유효하지 않은 주문입니다. 다시 입력해 주세요";
     private static final String VALID_PATTERN = "^(?:[가-힣]+-(?:[1-9]|[1-9][0-9]),\\s?)*[가-힣]+-(?:[1-9]|[1-9][0-9])$";
 
     @Override
@@ -23,10 +23,10 @@ public class OrderValidator extends AbstractValidator<String> {
 
     private void validateInput(String input) {
         if (isBlankOrNull(input)) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER_INPUT.getMessage());
         }
         if (!isValidInputFormat(input)) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER_INPUT.getMessage());
         }
     }
 
@@ -67,33 +67,33 @@ public class OrderValidator extends AbstractValidator<String> {
     private List<String> parseItemParts(String item) {
         List<String> parts = new ArrayList<>(Arrays.asList(item.trim().split("-")));
         if (parts.size() != 2) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_ORDER_INPUT.getMessage());
         }
         return parts;
     }
 
     private int parseQuantity(String quantityStr) {
-        return ValidationUtils.parseInteger(quantityStr, ERROR_INVALID_INPUT);
+        return ValidationUtils.parseInteger(quantityStr, ExceptionMessage.INVALID_QUANTITY.getMessage());
     }
 
     private MenuItem validateMenuItemExists(String menuItemName) {
         MenuItem menuItem = MenuItem.from(menuItemName);
         if (menuItem == null) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_MENU_ITEM.getMessage());
         }
         return menuItem;
     }
 
     private void validateUniqueMenuItem(Set<String> uniqueMenuNames, String menuItemName) {
         if (!uniqueMenuNames.add(menuItemName)) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.DUPLICATE_MENU_ITEM.getMessage());
         }
     }
 
     private void validateBeverageOnlyOrder(List<MenuItem> menuItems) {
         boolean allBeverageItems = menuItems.stream().allMatch(this::isMenuItemBeverage);
         if (allBeverageItems) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.BEVERAGE_ONLY_ORDER.getMessage());
         }
     }
 
@@ -103,13 +103,13 @@ public class OrderValidator extends AbstractValidator<String> {
 
     private void validateQuantity(int quantity) {
         if (quantity <= 0) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_QUANTITY.getMessage());
         }
     }
 
     private void validateTotalQuantity(int totalQuantity) {
         if (totalQuantity > OrderConstants.MAX_MENU_ITEMS_PER_ORDER.getValue()) {
-            throw new IllegalArgumentException(ERROR_INVALID_INPUT);
+            throw new IllegalArgumentException(ExceptionMessage.QUANTITY_EXCEEDS_LIMIT.getMessage());
         }
     }
 }
