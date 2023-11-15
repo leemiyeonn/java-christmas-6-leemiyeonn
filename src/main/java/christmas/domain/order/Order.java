@@ -6,23 +6,23 @@ import java.util.Map;
 
 public class Order {
     private final int visitDay;
-    private final Map<MenuItem, Integer> items;
+    private final Map<MenuItem, Integer> orderDetails;
 
-    public Order(int visitDay, Map<MenuItem, Integer> items) {
+    public Order(int visitDay, Map<MenuItem, Integer> orderDetails) {
         this.visitDay = visitDay;
-        this.items = items;
+        this.orderDetails = orderDetails;
     }
 
     public int getVisitDay() {
         return visitDay;
     }
 
-    public Map<MenuItem, Integer> getItems() {
-        return Collections.unmodifiableMap(items);
+    public Map<MenuItem, Integer> getOrderDetails() {
+        return Collections.unmodifiableMap(orderDetails);
     }
 
     public int calculateOrderTotal() {
-        return items.entrySet().stream()
+        return orderDetails.entrySet().stream()
                 .mapToInt(entry -> entry.getKey().getPrice() * entry.getValue())
                 .sum();
     }

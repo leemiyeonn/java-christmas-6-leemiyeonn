@@ -23,7 +23,7 @@ public class DayOfWeekDiscountStrategy implements Discount {
         if (!applicableDayOfWeekIndices.contains(dayOfWeekIndex)) {
             return 0;
         }
-        return order.getItems().entrySet().stream()
+        return order.getOrderDetails().entrySet().stream()
                 .filter(entry -> entry.getKey().getCategory() == this.menuCategory)
                 .mapToInt(entry -> entry.getValue() * this.discountAmount)
                 .sum();

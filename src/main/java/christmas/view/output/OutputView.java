@@ -33,7 +33,7 @@ public class OutputView {
     private static void printMenu(Order originalOrder) {
         Printer.printFormattedMessage(PrintFormat.ORDER_MENU_HEADER);
 
-        originalOrder.getItems().forEach((menuItem, quantity) ->
+        originalOrder.getOrderDetails().forEach((menuItem, quantity) ->
                 Printer.printFormattedMessage(PrintFormat.ORDER_ITEM_FORMAT, menuItem.getKoreanName(), quantity));
         Printer.printSeparator();
     }
