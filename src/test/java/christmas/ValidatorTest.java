@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class ValidatorTest {
+class ValidatorTest {
     @Nested
     class DateValidatorTests {
         private DateValidator dateValidator;
